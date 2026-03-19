@@ -18,14 +18,14 @@
     <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
     <group if="$(eval arg('mode') == 'keyboard')">
         <!-- launch the teleop keyboard control mode -->
-        <include file="$(find drone_controllers)/launch/drone_teleop.launch" />
+        <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
     </group>
     <group if="$(eval arg('mode') == 'autonomous')">
         <!-- launch the autonomous control mode -->
-        <include file="$(find drone_controllers)/launch/drone_autonomous.launch" />
+        <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
     </group>
     <group if="$(eval arg('mode') == 'time_trials')">
         <!-- launch the time trials control mode -->
-        <include file="$(find drone_controllers)/launch/time_trials.launch" />
+        <include file="$(find drone_time_trials)/launch/time_trials.launch" />
     </group>
 </launch>
