@@ -11,7 +11,7 @@
     <!-- launch the drone(s) if desired by user-->
     <group if="$(arg drone_a)" ns="drone_a">
         <param name="robot_description"
-            command="$(find xacro)/xacro $(find drone_desc)/urdf/drone.urdf name:=drone_a" />
+            command="$(find xacro)/xacro '$(find drone_desc)/urdf/drone.urdf' name:=drone_a" />
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_a" />
@@ -48,7 +48,7 @@
     <!-- launch the drone(s) if desired by user-->
     <group if="$(arg drone_b)" ns="drone_b">
         <param name="robot_description"
-            command="$(find xacro)/xacro $(find drone_desc)/urdf/drone.urdf name:=drone_b" />
+            command="$(find xacro)/xacro '$(find drone_desc)/urdf/drone.urdf' name:=drone_b" />
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_b" />
