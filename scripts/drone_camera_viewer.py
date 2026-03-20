@@ -10,8 +10,9 @@ class DroneTestNode:
         self.bridge = CvBridge()
         
         # Subscribe to the camera topic defined in your Gazebo plugin
-        self.image_sub = rospy.Subscriber("drone/camera1/image_raw", Image, self.image_callback)
-        rospy.loginfo("Drone Test Node Initialized. Waiting for images...")
+        self.window_name = f"Camera Feed: {rospy.get_namespace()}"
+        self.image_sub = rospy.Subscriber("camera1/image_raw", Image, self.image_callback)
+        rospy.loginfo("Drone Camera Node Initialized. Waiting for images...")
 
     def image_callback(self, data):
         try:
@@ -19,7 +20,7 @@ class DroneTestNode:
             cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
             
             # Show the image in a window
-            cv.imshow("Drone Camera Feed", cv_image)
+            cv.imshow(self.window_name, cv_image)
             cv.waitKey(1)
             
         except CvBridgeError as e:
