@@ -1,31 +1,84 @@
 <launch>
     <!-- define arguments to be accepted when calling roslaunch drone.launch -->
-    <arg name="mode" default="keyboard" />
-    <arg name="cam" default="false" />
+    <arg name="drone_a" default="true" />
+    <arg name="mode_a" default="keyboard" />
+    <arg name="cam_a" default="false" />
 
-    <!-- launch the drone -->
-    <include file="$(find drone_desc)/launch/drone_spawn.launch" />
-    <!-- launch drone camera view if cam arg is true -->
-    <group if="$(arg cam)">
-        <!-- 'name="node_name"' attribute should match the name in the python file -->
-        <!-- rospy.init_node('node_name', anonymous=True) -->
-        <node pkg="drone_bringup"
-            type="drone_camera_viewer.py"
-            name="drone_camera_viewer"
-            output="screen" />
+    <arg name="drone_b" default="false" />
+    <arg name="mode_b" default="keyboard" />
+    <arg name="cam_b" default="false" />
+
+    <!-- launch the drone(s) if desired by user-->
+    <group if="$(arg drone_a)" ns="drone_a">
+        <param name="robot_description"
+            command="$(find xacro)/xacro $(find drone_desc)/urdf/drone.urdf name:=drone_a" />
+
+        <include file="$(find drone_desc)/launch/drone_spawn.launch">
+            <arg name="name" value="drone_a" />
+            <arg name="x" value="0.0" />
+            <arg name="y" value="0.0" />
+            <arg name="z" value="1" />
+        </include>
+
+        <!-- launch drone camera view if cam arg is true -->
+        <group if="$(arg cam_a)">
+            <!-- 'name="node_name"' attribute should match the name in the python file -->
+            <!-- rospy.init_node('node_name', anonymous=True) -->
+            <node pkg="drone_bringup"
+                type="drone_camera_viewer.py"
+                name="drone_camera_viewer"
+                output="screen" />
+        </group>
+
+        <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
+        <group if="$(eval arg('mode_a') == 'keyboard')">
+            <!-- launch the teleop keyboard control mode -->
+            <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'autonomous')">
+            <!-- launch the autonomous control mode -->
+            <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'time_trials')">
+            <!-- launch the time trials control mode -->
+            <include file="$(find drone_time_trials)/launch/time_trials.launch" />
+        </group>
     </group>
 
-    <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
-    <group if="$(eval arg('mode') == 'keyboard')">
-        <!-- launch the teleop keyboard control mode -->
-        <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
-    </group>
-    <group if="$(eval arg('mode') == 'autonomous')">
-        <!-- launch the autonomous control mode -->
-        <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
-    </group>
-    <group if="$(eval arg('mode') == 'time_trials')">
-        <!-- launch the time trials control mode -->
-        <include file="$(find drone_time_trials)/launch/time_trials.launch" />
+    <!-- launch the drone(s) if desired by user-->
+    <group if="$(arg drone_b)" ns="drone_b">
+        <param name="robot_description"
+            command="$(find xacro)/xacro $(find drone_desc)/urdf/drone.urdf name:=drone_b" />
+
+        <include file="$(find drone_desc)/launch/drone_spawn.launch">
+            <arg name="name" value="drone_b" />
+            <arg name="x" value="0.0" />
+            <arg name="y" value="1" />
+            <arg name="z" value="1" />
+        </include>
+
+        <!-- launch drone camera view if cam arg is true -->
+        <group if="$(arg cam_b)">
+            <!-- 'name="node_name"' attribute should match the name in the python file -->
+            <!-- rospy.init_node('node_name', anonymous=True) -->
+            <node pkg="drone_bringup"
+                type="drone_camera_viewer.py"
+                name="drone_camera_viewer"
+                output="screen" />
+        </group>
+
+        <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
+        <group if="$(eval arg('mode_b') == 'keyboard')">
+            <!-- launch the teleop keyboard control mode -->
+            <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'autonomous')">
+            <!-- launch the autonomous control mode -->
+            <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'time_trials')">
+            <!-- launch the time trials control mode -->
+            <include file="$(find drone_time_trials)/launch/time_trials.launch" />
+        </group>
     </group>
 </launch>
