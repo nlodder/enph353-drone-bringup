@@ -41,7 +41,7 @@
         </group>
         <group if="$(eval arg('mode_a') == 'time_trials')">
             <!-- launch the time trials control mode -->
-            <include file="$(find drone_time_trials)/launch/time_trials.launch" />
+            <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
         </group>
     </group>
 
@@ -78,7 +78,7 @@
         </group>
         <group if="$(eval arg('mode_b') == 'time_trials')">
             <!-- launch the time trials control mode -->
-            <include file="$(find drone_time_trials)/launch/time_trials.launch" />
+            <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
         </group>
     </group>
 </launch>
