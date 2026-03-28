@@ -8,6 +8,12 @@
     <arg name="mode_b" default="keyboard" />
     <arg name="cam_b" default="false" />
 
+    <arg name="pics_per_sign" default="20" />
+	<arg name="pics_data_path" default="sign_pics/" />
+	<arg name="pics_ellipse_width" default="1.5"/>
+	<arg name="pics_ellipse_height" default="1"/>
+	<arg name="pics_distance_from_sign" default="0.5"/>
+
     <!-- launch the drone(s) if desired by user-->
     <group if="$(arg drone_a)" ns="drone_a">
         <param name="robot_description"
@@ -42,6 +48,16 @@
         <group if="$(eval arg('mode_a') == 'time_trials')">
             <!-- launch the time trials control mode -->
             <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'collect_photos')">
+            <!-- launch the photo collection control mode -->
+            <include file="$(find drone_pic_collector)/launch/drone_pic_collector.launch" >
+                <arg name="pics_data_path" value="$(arg pics_data_path)" />
+                <arg name="pics_per_sign" value="$(arg pics_per_sign)"/>
+                <arg name="ellipse_width" value="$(arg pics_ellipse_width)"/>
+                <arg name="ellipse_height" value="$(arg pics_ellipse_height)"/>
+                <arg name="distance_from_sign" value="$(arg pics_distance_from_sign)"/>
+            </include>
         </group>
     </group>
 
@@ -79,6 +95,16 @@
         <group if="$(eval arg('mode_b') == 'time_trials')">
             <!-- launch the time trials control mode -->
             <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'collect_photos')">
+            <!-- launch the photo collection control mode -->
+            <include file="$(find drone_pic_collector)/launch/drone_pic_collector.launch" >
+                <arg name="pics_data_path" value="$(arg pics_data_path)" />
+                <arg name="pics_per_sign" value="$(arg pics_per_sign)"/>
+                <arg name="ellipse_width" value="$(arg pics_ellipse_width)"/>
+                <arg name="ellipse_height" value="$(arg pics_ellipse_height)"/>
+                <arg name="distance_from_sign" value="$(arg pics_distance_from_sign)"/>
+            </include>
         </group>
     </group>
 </launch>
