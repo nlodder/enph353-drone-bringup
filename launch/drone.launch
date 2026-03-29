@@ -26,13 +26,23 @@
             <arg name="z" value="1" />
         </include>
 
-        <!-- launch drone camera view if cam arg is true -->
-        <group if="$(arg cam_a)">
+        <!-- launch drone front camera view if cam arg is true -->
+        <group if="$(arg cam_front_a)">
             <!-- 'name="node_name"' attribute should match the name in the python file -->
             <!-- rospy.init_node('node_name', anonymous=True) -->
             <node pkg="drone_bringup"
-                type="drone_camera_viewer.py"
-                name="drone_camera_viewer"
+                type="drone_front_cam_viewer.py"
+                name="drone_front_cam_viewer"
+                output="screen" />
+        </group>
+
+        <!-- launch drone down camera view if cam arg is true -->
+        <group if="$(arg cam_down_a)">
+            <!-- 'name="node_name"' attribute should match the name in the python file -->
+            <!-- rospy.init_node('node_name', anonymous=True) -->
+            <node pkg="drone_bringup"
+                type="drone_down_cam_viewer.py"
+                name="drone_down_cam_viewer"
                 output="screen" />
         </group>
 
@@ -73,13 +83,23 @@
             <arg name="z" value="1" />
         </include>
 
-        <!-- launch drone camera view if cam arg is true -->
-        <group if="$(arg cam_b)">
+        <!-- launch drone front camera view if cam arg is true -->
+        <group if="$(arg cam_front_b)">
             <!-- 'name="node_name"' attribute should match the name in the python file -->
             <!-- rospy.init_node('node_name', anonymous=True) -->
             <node pkg="drone_bringup"
-                type="drone_camera_viewer.py"
-                name="drone_camera_viewer"
+                type="drone_front_cam_viewer.py"
+                name="drone_front_cam_viewer"
+                output="screen" />
+        </group>
+
+        <!-- launch drone down camera view if cam arg is true -->
+        <group if="$(arg cam_down_b)">
+            <!-- 'name="node_name"' attribute should match the name in the python file -->
+            <!-- rospy.init_node('node_name', anonymous=True) -->
+            <node pkg="drone_bringup"
+                type="drone_down_cam_viewer.py"
+                name="drone_down_cam_viewer"
                 output="screen" />
         </group>
 
