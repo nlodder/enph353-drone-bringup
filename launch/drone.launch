@@ -2,11 +2,15 @@
     <!-- define arguments to be accepted when calling roslaunch drone.launch -->
     <arg name="drone_a" default="true" />
     <arg name="mode_a" default="keyboard" />
-    <arg name="cam_a" default="false" />
+    <arg name="cam_front_a" default="false" />
+    <arg name="cam_down_a" default="false" />
+    <arg name="las_down_a" default="false" />
 
     <arg name="drone_b" default="false" />
     <arg name="mode_b" default="keyboard" />
-    <arg name="cam_b" default="false" />
+    <arg name="cam_front_b" default="false" />
+    <arg name="cam_down_b" default="false" />
+    <arg name="las_down_b" default="false" />
 
     <arg name="pics_per_sign" default="20" />
 	<arg name="pics_data_path" default="sign_pics/" />
@@ -43,6 +47,16 @@
             <node pkg="drone_bringup"
                 type="drone_down_cam_viewer.py"
                 name="drone_down_cam_viewer"
+                output="screen" />
+        </group>
+
+        <!-- launch drone down laser view if las arg is true -->
+        <group if="$(arg las_down_a)">
+            <!-- 'name="node_name"' attribute should match the name in the python file -->
+            <!-- rospy.init_node('node_name', anonymous=True) -->
+            <node pkg="drone_bringup"
+                type="drone_down_las_viewer.py"
+                name="drone_down_las_viewer"
                 output="screen" />
         </group>
 
@@ -100,6 +114,16 @@
             <node pkg="drone_bringup"
                 type="drone_down_cam_viewer.py"
                 name="drone_down_cam_viewer"
+                output="screen" />
+        </group>
+
+        <!-- launch drone down laser view if las arg is true -->
+        <group if="$(arg las_down_b)">
+            <!-- 'name="node_name"' attribute should match the name in the python file -->
+            <!-- rospy.init_node('node_name', anonymous=True) -->
+            <node pkg="drone_bringup"
+                type="drone_down_las_viewer.py"
+                name="drone_down_las_viewer"
                 output="screen" />
         </group>
 
