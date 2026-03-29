@@ -57,7 +57,9 @@
             <node pkg="drone_bringup"
                 type="drone_down_las_viewer.py"
                 name="drone_down_las_viewer"
-                output="screen" />
+                output="screen"
+                launch-prefix="bash -c 'sleep 2.0; $0 $@' "/>
+            <!-- launch-prefix ... adds a delay, this is my attempt to ensure lasers are shown-->
         </group>
 
         <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
@@ -124,7 +126,9 @@
             <node pkg="drone_bringup"
                 type="drone_down_las_viewer.py"
                 name="drone_down_las_viewer"
-                output="screen" />
+                output="screen"
+                launch-prefix="bash -c 'sleep 2.0; $0 $@' "/>
+                <!-- launch-prefix ... adds a delay, this is my attempt to ensure lasers are shown-->/>
         </group>
 
         <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
