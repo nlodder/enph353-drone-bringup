@@ -22,7 +22,7 @@ class LaserTerrainPlotter:
         
         # Subscribe to the laser topic defined Gazebo plugin
         self.window_name = f"Down Laser Feed: {rospy.get_namespace()}"
-        self.image_sub = rospy.Subscriber("down_laser/scan", LaserScan, self.data_callback)
+        self.laser_sub = rospy.Subscriber("down_laser/scan", LaserScan, self.data_callback)
         rospy.loginfo("Drone Laser Node Initialized. Waiting for scans...")
 
     def data_callback(self, data):
