@@ -162,7 +162,9 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/drone_camera_viewer.py
+  scripts/drone_down_cam_viewer.py
+  scripts/drone_front_cam_viewer.py
+  scripts/drone_down_las_viewer.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
