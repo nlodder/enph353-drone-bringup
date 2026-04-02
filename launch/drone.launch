@@ -85,6 +85,9 @@
                 <arg name="distance_from_sign" value="$(arg pics_distance_from_sign)"/>
             </include>
         </group>
+
+        <!-- launch drone stabilization -->
+        <include file="$(find stable_drone)/launch/stable_drone.launch" />
     </group>
 
     <!-- launch the drone(s) if desired by user-->
@@ -154,5 +157,8 @@
                 <arg name="distance_from_sign" value="$(arg pics_distance_from_sign)"/>
             </include>
         </group>
+
+        <!-- launch drone stabilization -->
+        <include file="$(find stable_drone)/launch/stable_drone.launch" />
     </group>
 </launch>
