@@ -25,8 +25,8 @@
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_a" />
-            <arg name="x" value="0.0" />
-            <arg name="y" value="0.0" />
+            <arg name="x" value="1.0" />
+            <arg name="y" value="1.0" />
             <arg name="z" value="1" />
         </include>
 
@@ -87,7 +87,7 @@
         </group>
 
         <!-- launch drone stabilization -->
-        <include file="$(find stable_drone)/launch/stable_drone.launch" />
+        <!-- <include file="$(find stable_drone)/launch/stable_drone.launch" /> -->
     </group>
 
     <!-- launch the drone(s) if desired by user-->

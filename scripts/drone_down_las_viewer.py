@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from collections import deque
+from std_msgs.msg import Float64
 
 class LaserTerrainPlotter:
     def __init__(self, buffer_size=50):
@@ -23,12 +24,14 @@ class LaserTerrainPlotter:
         # Subscribe to the laser topic defined Gazebo plugin
         self.window_name = f"Down Laser Feed: {rospy.get_namespace()}"
         self.laser_sub = rospy.Subscriber("down_laser/scan", LaserScan, self.data_callback)
+        self.elev_pub = rospy.Publisher("altitude", Float64, queue_size=1) # publish altitude for cmd bridge
         rospy.loginfo("Drone Laser Node Initialized. Waiting for scans...")
 
     def data_callback(self, data):
         # Convert LaserScan to numpy array
         ranges = np.array(data.ranges)
         self.drone_elevation = data.ranges[len(ranges) // 2] # assume middle beam is directly below drone for elevation reference
+        self.elev_pub.publish(self.drone_elevation) # publish elevation for cmd bridge
         angles = None
         if hasattr(data, 'angles'):
             angles = np.array(data.angles)
@@ -56,7 +59,7 @@ class LaserTerrainPlotter:
         # plot surface
         self.ax.plot_surface(X, Y, heights, cmap='viridis', edgecolor='none')
 
-        self.ax.set_zlim(0, max(self.drone_elevation, 0.01)) # set z limit for plot based on drone elevation
+        self.ax.set_zlim(0, min(max(self.drone_elevation, 0.01), 20)) # set z limit for plot based on drone elevation
         self.ax.set_title(self.window_name)
         self.ax.set_xlabel('Laser Beam Index')
         self.ax.set_ylabel('Time Step')
