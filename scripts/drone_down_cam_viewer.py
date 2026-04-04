@@ -14,6 +14,8 @@ class DroneTestNode:
         self.image_sub = rospy.Subscriber("camera2/image_raw", Image, self.image_callback)
         rospy.loginfo("Drone Camera Node Initialized. Waiting for images...")
 
+        rospy.sleep(0.5)
+
     def image_callback(self, data):
         try:
             # Convert ROS Image message to OpenCV format

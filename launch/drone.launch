@@ -7,7 +7,7 @@
     <arg name="las_down_a" default="false" />
 
     <arg name="drone_b" default="false" />
-    <arg name="mode_b" default="keyboard" />
+    <arg name="mode_b" default="overseer" />
     <arg name="cam_front_b" default="false" />
     <arg name="cam_down_b" default="false" />
     <arg name="las_down_b" default="false" />
@@ -78,6 +78,10 @@
             <!-- launch the time trials control mode -->
             <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
         </group>
+        <group if="$(eval arg('mode_a') == 'overseer')">
+            <!-- launch the overseer control mode -->
+            <include file="$(find overseer_drone)/launch/overseer_drone.launch" />
+        </group>
         <group if="$(eval arg('mode_a') == 'collect_photos')">
             <!-- launch the photo collection control mode -->
             <include file="$(find drone_pic_collector)/launch/drone_pic_collector.launch" >
@@ -100,9 +104,9 @@
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_b" />
-            <arg name="x" value="0.0" />
-            <arg name="y" value="1" />
-            <arg name="z" value="1" />
+            <arg name="x" value="5.5" />
+            <arg name="y" value="2.5" />
+            <arg name="z" value="0.01" />
         </include>
 
         <!-- launch drone front camera view if cam arg is true -->
@@ -149,6 +153,10 @@
         <group if="$(eval arg('mode_b') == 'time_trials')">
             <!-- launch the time trials control mode -->
             <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'overseer')">
+            <!-- launch the overseer control mode -->
+            <include file="$(find overseer_drone)/launch/overseer_drone.launch" />
         </group>
         <group if="$(eval arg('mode_b') == 'collect_photos')">
             <!-- launch the photo collection control mode -->

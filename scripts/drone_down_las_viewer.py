@@ -10,7 +10,7 @@ from std_msgs.msg import Float64
 class LaserTerrainPlotter:
     def __init__(self, buffer_size=50):
         self.buffer_size = buffer_size
-        self.drone_elevation = None
+        self.drone_elevation = 0.0
 
         # store last N scans in a buffer
         self.scan_buffer = deque(maxlen=buffer_size)
@@ -26,24 +26,40 @@ class LaserTerrainPlotter:
         self.laser_sub = rospy.Subscriber("down_laser/scan", LaserScan, self.data_callback)
         self.elev_pub = rospy.Publisher("altitude", Float64, queue_size=1) # publish altitude for cmd bridge
         rospy.loginfo("Drone Laser Node Initialized. Waiting for scans...")
+        
+        rospy.sleep(0.5)
 
     def data_callback(self, data):
         # Convert LaserScan to numpy array
         ranges = np.array(data.ranges)
-        angles = None
-        if hasattr(data, 'angles'):
-            angles = np.array(data.angles)
-        else:
-            angles = np.linspace(data.angle_min, data.angle_max, len(ranges))
-        ranges[np.isinf(ranges)] = 0 # replace inf with 0 for plotting
+        
+        # FIX: Filter out Inf/NaN before averaging
+        # If the laser hits nothing, it returns 'inf'. We should ignore these for altitude.
+        valid_indices = np.where(np.isfinite(ranges))[0]
+        
+        if len(valid_indices) > 0:
+            # Use middle section of the scan for altitude (downward looking)
+            mid = len(ranges) // 2
+            slice_data = ranges[max(0, mid-20) : min(len(ranges), mid+20)]
+            
+            # Filter infs from the slice specifically
+            valid_slice = slice_data[np.isfinite(slice_data)]
+            
+            if len(valid_slice) > 0:
+                self.drone_elevation = np.mean(valid_slice)
+            else:
+                # If center is inf but edges are valid, use general mean
+                self.drone_elevation = np.mean(ranges[valid_indices])
+        
+        # Publish for the PID controller
+        self.elev_pub.publish(Float64(self.drone_elevation))
 
-        # correct ranges for their angles to get actual elevations
-        # assuming laser is pointing down, we can calculate the height of the terrain at each beam
-        heights = ranges * np.cos(angles) # height = range * cos(angle)
-        self.drone_elevation = sum(heights[len(ranges)//2 - 20 : len(ranges)//2 + 20]) / 40 # average height as drone elevation
-        self.elev_pub.publish(self.drone_elevation) # publish elevation for cmd bridge
-        heights = self.drone_elevation - heights # convert to height above ground
-        self.scan_buffer.append(heights) # store heights in buffer
+        # Prep for plotting: convert Inf to a high value (max range) so the plot doesn't break
+        plot_ranges = np.where(np.isinf(ranges), data.range_max, ranges)
+        
+        # heights = altitude - range (distance from drone to ground)
+        heights = self.drone_elevation - plot_ranges
+        self.scan_buffer.append(heights)
     
     def update_plot(self):
         if len(self.scan_buffer) == 0:
