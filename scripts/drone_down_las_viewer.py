@@ -75,7 +75,7 @@ class LaserTerrainPlotter:
         # plot surface
         self.ax.plot_surface(X, Y, heights, cmap='viridis', edgecolor='none')
 
-        self.ax.set_zlim( 0, min( max(self.drone_elevation, 0.01), 10 ) ) # set z limit for plot based on drone elevation
+        self.ax.set_zlim( 0, min( max(self.drone_elevation, 0.01), 20 ) ) # set z limit for plot based on drone elevation
         self.ax.set_title(self.window_name)
         self.ax.set_xlabel('Laser Beam Index')
         self.ax.set_ylabel('Time Step')
