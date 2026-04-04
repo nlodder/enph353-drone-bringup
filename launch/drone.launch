@@ -28,6 +28,9 @@
             <arg name="x" value="1.0" />
             <arg name="y" value="1.0" />
             <arg name="z" value="1" />
+            <arg name="r" value="0.0" />
+            <arg name="p" value="0.0" />
+            <arg name="Y" value="0.0" />
         </include>
 
         <!-- launch drone front camera view if cam arg is true -->
@@ -87,7 +90,7 @@
         </group>
 
         <!-- launch drone stabilization -->
-        <!-- <include file="$(find stable_drone)/launch/stable_drone.launch" /> -->
+        <include file="$(find stable_rp)/launch/stable_rp.launch" />
     </group>
 
     <!-- launch the drone(s) if desired by user-->
@@ -159,6 +162,6 @@
         </group>
 
         <!-- launch drone stabilization -->
-        <include file="$(find stable_drone)/launch/stable_drone.launch" />
+        <include file="$(find stable_rp)/launch/stable_rp.launch" />
     </group>
 </launch>

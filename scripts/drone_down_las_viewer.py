@@ -30,8 +30,6 @@ class LaserTerrainPlotter:
     def data_callback(self, data):
         # Convert LaserScan to numpy array
         ranges = np.array(data.ranges)
-        self.drone_elevation = data.ranges[len(ranges) // 2] # assume middle beam is directly below drone for elevation reference
-        self.elev_pub.publish(self.drone_elevation) # publish elevation for cmd bridge
         angles = None
         if hasattr(data, 'angles'):
             angles = np.array(data.angles)
@@ -42,6 +40,8 @@ class LaserTerrainPlotter:
         # correct ranges for their angles to get actual elevations
         # assuming laser is pointing down, we can calculate the height of the terrain at each beam
         heights = ranges * np.cos(angles) # height = range * cos(angle)
+        self.drone_elevation = sum(heights[len(ranges)//2 - 20 : len(ranges)//2 + 20]) / 40 # average height as drone elevation
+        self.elev_pub.publish(self.drone_elevation) # publish elevation for cmd bridge
         heights = self.drone_elevation - heights # convert to height above ground
         self.scan_buffer.append(heights) # store heights in buffer
     
@@ -59,7 +59,7 @@ class LaserTerrainPlotter:
         # plot surface
         self.ax.plot_surface(X, Y, heights, cmap='viridis', edgecolor='none')
 
-        self.ax.set_zlim(0, min(max(self.drone_elevation, 0.01), 20)) # set z limit for plot based on drone elevation
+        self.ax.set_zlim( 0, min( max(self.drone_elevation, 0.01), 10 ) ) # set z limit for plot based on drone elevation
         self.ax.set_title(self.window_name)
         self.ax.set_xlabel('Laser Beam Index')
         self.ax.set_ylabel('Time Step')
@@ -69,5 +69,10 @@ class LaserTerrainPlotter:
 
 if __name__ == '__main__':
     plotter = LaserTerrainPlotter()
-    while not rospy.is_shutdown():
-        plotter.update_plot()
+    # while not rospy.is_shutdown():
+    #     plotter.update_plot()
+
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        rospy.loginfo("Shutting down")
