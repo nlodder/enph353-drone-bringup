@@ -1,16 +1,16 @@
 <launch>
     <!-- define arguments to be accepted when calling roslaunch drone.launch -->
     <arg name="drone_a" default="true" />
-    <arg name="mode_a" default="keyboard" />
+    <arg name="mode_a" default="worker" />
     <arg name="cam_front_a" default="false" />
     <arg name="cam_down_a" default="false" />
-    <arg name="las_down_a" default="false" />
+    <arg name="depth_cam_a" default="true" />
 
     <arg name="drone_b" default="false" />
     <arg name="mode_b" default="overseer" />
     <arg name="cam_front_b" default="false" />
     <arg name="cam_down_b" default="false" />
-    <arg name="las_down_b" default="false" />
+    <arg name="depth_cam_b" default="true" />
 
     <arg name="pics_per_sign" default="20" />
 	<arg name="pics_data_path" default="sign_pics/" />
@@ -25,9 +25,9 @@
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_a" />
-            <arg name="x" value="1.0" />
-            <arg name="y" value="1.0" />
-            <arg name="z" value="1" />
+            <arg name="x" value="5.75" />
+            <arg name="y" value="2.5" />
+            <arg name="z" value="0.01" />
             <arg name="r" value="0.0" />
             <arg name="p" value="0.0" />
             <arg name="Y" value="0.0" />
@@ -54,12 +54,12 @@
         </group>
 
         <!-- launch drone down laser view if las arg is true -->
-        <group if="$(arg las_down_a)">
+        <group if="$(arg depth_cam_a)">
             <!-- 'name="node_name"' attribute should match the name in the python file -->
             <!-- rospy.init_node('node_name', anonymous=True) -->
             <node pkg="drone_bringup"
-                type="drone_down_las_viewer.py"
-                name="drone_down_las_viewer"
+                type="depth_altimeter.py"
+                name="depth_altimeter"
                 output="screen"
                 launch-prefix="bash -c 'sleep 2.0; $0 $@' "/>
             <!-- launch-prefix ... adds a delay, this is my attempt to ensure lasers are shown-->
@@ -81,6 +81,10 @@
         <group if="$(eval arg('mode_a') == 'overseer')">
             <!-- launch the overseer control mode -->
             <include file="$(find overseer_drone)/launch/overseer_drone.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'worker')">
+            <!-- launch the worker control mode -->
+            <include file="$(find worker)/launch/worker.launch" />
         </group>
         <group if="$(eval arg('mode_a') == 'collect_photos')">
             <!-- launch the photo collection control mode -->
@@ -105,7 +109,7 @@
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_b" />
             <arg name="x" value="5.5" />
-            <arg name="y" value="2.5" />
+            <arg name="y" value="2.2" />
             <arg name="z" value="0.01" />
         </include>
 
@@ -130,12 +134,12 @@
         </group>
 
         <!-- launch drone down laser view if las arg is true -->
-        <group if="$(arg las_down_b)">
+        <group if="$(arg depth_cam_b)">
             <!-- 'name="node_name"' attribute should match the name in the python file -->
             <!-- rospy.init_node('node_name', anonymous=True) -->
             <node pkg="drone_bringup"
-                type="drone_down_las_viewer.py"
-                name="drone_down_las_viewer"
+                type="depth_altimeter.py"
+                name="depth_altimeter"
                 output="screen"
                 launch-prefix="bash -c 'sleep 2.0; $0 $@' "/>
                 <!-- launch-prefix ... adds a delay, this is my attempt to ensure lasers are shown-->/>
@@ -157,6 +161,10 @@
         <group if="$(eval arg('mode_b') == 'overseer')">
             <!-- launch the overseer control mode -->
             <include file="$(find overseer_drone)/launch/overseer_drone.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'worker')">
+            <!-- launch the worker control mode -->
+            <include file="$(find worker)/launch/worker.launch" />
         </group>
         <group if="$(eval arg('mode_b') == 'collect_photos')">
             <!-- launch the photo collection control mode -->

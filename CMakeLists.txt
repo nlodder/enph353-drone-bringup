@@ -164,7 +164,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/drone_down_cam_viewer.py
   scripts/drone_front_cam_viewer.py
-  scripts/drone_down_las_viewer.py
+  scripts/depth_altimeter.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
