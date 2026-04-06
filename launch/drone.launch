@@ -5,12 +5,14 @@
     <arg name="cam_front_a" default="false" />
     <arg name="cam_down_a" default="false" />
     <arg name="depth_cam_a" default="true" />
+    <arg name="stable_rpy_a" default="true" />
 
     <arg name="drone_b" default="false" />
     <arg name="mode_b" default="overseer" />
     <arg name="cam_front_b" default="false" />
     <arg name="cam_down_b" default="false" />
     <arg name="depth_cam_b" default="true" />
+    <arg name="stable_rpy_b" default="true" />
 
     <arg name="pics_per_sign" default="20" />
 	<arg name="pics_data_path" default="sign_pics/" />
@@ -97,8 +99,10 @@
             </include>
         </group>
 
-        <!-- launch drone stabilization -->
-        <include file="$(find stable_rp)/launch/stable_rp.launch" />
+        <!-- launch drone roll, pitch, yaw stabilization -->
+        <group if="$(eval arg('stable_rpy_a') == 'true')">
+            <include file="$(find stable_rpy)/launch/stable_rpy.launch" />
+        </group>
     </group>
 
     <!-- launch the drone(s) if desired by user-->
@@ -177,7 +181,9 @@
             </include>
         </group>
 
-        <!-- launch drone stabilization -->
-        <include file="$(find stable_rp)/launch/stable_rp.launch" />
+        <!-- launch drone roll, pitch, yaw stabilization -->
+        <group if="$(eval arg('stable_rpy_b') == 'true')">
+            <include file="$(find stable_rpy)/launch/stable_rpy.launch" />
+        </group>
     </group>
 </launch>
