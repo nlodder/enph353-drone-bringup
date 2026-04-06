@@ -72,9 +72,13 @@
             <!-- launch the teleop keyboard control mode -->
             <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
         </group>
-        <group if="$(eval arg('mode_a') == 'autonomous')">
-            <!-- launch the autonomous control mode -->
-            <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
+        <group if="$(eval arg('mode_a') == 'team_left')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_left)/launch/drone_left.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'team_right')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_right)/launch/drone_right.launch" />
         </group>
         <group if="$(eval arg('mode_a') == 'time_trials')">
             <!-- launch the time trials control mode -->
@@ -99,8 +103,10 @@
             </include>
         </group>
 
+        if="$(arg drone_a)"
+
         <!-- launch drone roll, pitch, yaw stabilization -->
-        <group if="$(eval arg('stable_rpy_a') == 'true')">
+        <group if="$(arg stable_rpy_a)">
             <include file="$(find stable_rpy)/launch/stable_rpy.launch" />
         </group>
     </group>
@@ -154,9 +160,13 @@
             <!-- launch the teleop keyboard control mode -->
             <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
         </group>
-        <group if="$(eval arg('mode_b') == 'autonomous')">
-            <!-- launch the autonomous control mode -->
-            <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
+        <group if="$(eval arg('mode_b') == 'team_left')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_left)/launch/drone_left.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'team_right')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_right)/launch/drone_right.launch" />
         </group>
         <group if="$(eval arg('mode_b') == 'time_trials')">
             <!-- launch the time trials control mode -->
@@ -182,7 +192,7 @@
         </group>
 
         <!-- launch drone roll, pitch, yaw stabilization -->
-        <group if="$(eval arg('stable_rpy_b') == 'true')">
+        <group if="$(arg stable_rpy_b)">
             <include file="$(find stable_rpy)/launch/stable_rpy.launch" />
         </group>
     </group>

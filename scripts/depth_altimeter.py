@@ -16,13 +16,19 @@ class DepthTerrainPlotter:
         rospy.loginfo("Depth Altimeter Node Initialized. Waiting for scans...")
         
         self.bridge = CvBridge()
-    
+        self.depth_img = None
         rospy.sleep(0.5)
 
     def depth_callback(self, data):
+        self.depth_img = data
+        return
+    
+    def run(self):
+        if self.depth_img is None:
+            return
         try:
             # convert ROS Image to OpenCV format (32-bit float, values in meters)
-            depth_image = self.bridge.imgmsg_to_cv2(data, desired_encoding="32FC1")
+            depth_image = self.bridge.imgmsg_to_cv2(self.depth_img, desired_encoding="32FC1")
             h, w = depth_image.shape
             
             # define a Region of Interest in the center of the frame
@@ -49,16 +55,16 @@ class DepthTerrainPlotter:
                     self.elev_pub.publish(Float64(self.drone_elevation))
                 else:
                     rospy.logwarn_throttle(1, "Depth perception lost!!!")
-            
 
         except CvBridgeError as e:
             rospy.logerr(f"CvBridge Error: {e}")
 
+def main():
+    bridge = DepthTerrainPlotter()
+    try:
+        bridge.run()
+    except rospy.ROSInterruptException:
+        pass
 
 if __name__ == '__main__':
-    plotter = DepthTerrainPlotter()
-
-    try:
-        rospy.spin()
-    except KeyboardInterrupt:
-        rospy.loginfo("Shutting down")
+    main()
