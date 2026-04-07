@@ -14,11 +14,17 @@
     <arg name="depth_cam_b" default="true" />
     <arg name="stable_rpy_b" default="true" />
 
+    <arg name="neural_net" default="true" />
+
     <arg name="pics_per_sign" default="20" />
 	<arg name="pics_data_path" default="sign_pics/" />
 	<arg name="pics_ellipse_width" default="1.5"/>
 	<arg name="pics_ellipse_height" default="1"/>
 	<arg name="pics_distance_from_sign" default="0.5"/>
+
+    <group if="$(arg neural_net)">
+        <include file="$(find neural_net)/launch/neural_net.launch" />
+    </group>
 
     <!-- launch the drone(s) if desired by user-->
     <group if="$(arg drone_a)" ns="drone_a">
@@ -114,8 +120,8 @@
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_b" />
-            <arg name="x" value="5.5" />
-            <arg name="y" value="2.2" />
+            <arg name="x" value="5.15" />
+            <arg name="y" value="2.5" />
             <arg name="z" value="0.01" />
         </include>
 
