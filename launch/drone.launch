@@ -1,16 +1,18 @@
 <launch>
     <!-- define arguments to be accepted when calling roslaunch drone.launch -->
     <arg name="drone_a" default="true" />
-    <arg name="mode_a" default="keyboard" />
+    <arg name="mode_a" default="worker" />
     <arg name="cam_front_a" default="false" />
     <arg name="cam_down_a" default="false" />
-    <arg name="las_down_a" default="false" />
+    <arg name="depth_cam_a" default="true" />
+    <arg name="stable_rpy_a" default="true" />
 
     <arg name="drone_b" default="false" />
-    <arg name="mode_b" default="keyboard" />
+    <arg name="mode_b" default="overseer" />
     <arg name="cam_front_b" default="false" />
     <arg name="cam_down_b" default="false" />
-    <arg name="las_down_b" default="false" />
+    <arg name="depth_cam_b" default="true" />
+    <arg name="stable_rpy_b" default="true" />
 
     <arg name="pics_per_sign" default="20" />
 	<arg name="pics_data_path" default="sign_pics/" />
@@ -25,9 +27,12 @@
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_a" />
-            <arg name="x" value="0.0" />
-            <arg name="y" value="0.0" />
-            <arg name="z" value="1" />
+            <arg name="x" value="5.75" />
+            <arg name="y" value="2.5" />
+            <arg name="z" value="0.01" />
+            <arg name="r" value="0.0" />
+            <arg name="p" value="0.0" />
+            <arg name="Y" value="0.0" />
         </include>
 
         <!-- launch drone front camera view if cam arg is true -->
@@ -51,15 +56,13 @@
         </group>
 
         <!-- launch drone down laser view if las arg is true -->
-        <group if="$(arg las_down_a)">
+        <group if="$(arg depth_cam_a)">
             <!-- 'name="node_name"' attribute should match the name in the python file -->
             <!-- rospy.init_node('node_name', anonymous=True) -->
             <node pkg="drone_bringup"
-                type="drone_down_las_viewer.py"
-                name="drone_down_las_viewer"
-                output="screen"
-                launch-prefix="bash -c 'sleep 2.0; $0 $@' "/>
-            <!-- launch-prefix ... adds a delay, this is my attempt to ensure lasers are shown-->
+                type="depth_altimeter.py"
+                name="depth_altimeter"
+                output="screen"/>
         </group>
 
         <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
@@ -67,13 +70,25 @@
             <!-- launch the teleop keyboard control mode -->
             <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
         </group>
-        <group if="$(eval arg('mode_a') == 'autonomous')">
-            <!-- launch the autonomous control mode -->
-            <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
+        <group if="$(eval arg('mode_a') == 'team_left')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_left)/launch/drone_left.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'team_right')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_right)/launch/drone_right.launch" />
         </group>
         <group if="$(eval arg('mode_a') == 'time_trials')">
             <!-- launch the time trials control mode -->
             <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'overseer')">
+            <!-- launch the overseer control mode -->
+            <include file="$(find overseer_drone)/launch/overseer_drone.launch" />
+        </group>
+        <group if="$(eval arg('mode_a') == 'worker')">
+            <!-- launch the worker control mode -->
+            <include file="$(find worker)/launch/worker.launch" />
         </group>
         <group if="$(eval arg('mode_a') == 'collect_photos')">
             <!-- launch the photo collection control mode -->
@@ -86,8 +101,10 @@
             </include>
         </group>
 
-        <!-- launch drone stabilization -->
-        <include file="$(find stable_drone)/launch/stable_drone.launch" />
+        <!-- launch drone roll, pitch, yaw stabilization -->
+        <group if="$(arg stable_rpy_a)">
+            <include file="$(find stable_rpy)/launch/stable_rpy.launch" />
+        </group>
     </group>
 
     <!-- launch the drone(s) if desired by user-->
@@ -97,9 +114,9 @@
 
         <include file="$(find drone_desc)/launch/drone_spawn.launch">
             <arg name="name" value="drone_b" />
-            <arg name="x" value="0.0" />
-            <arg name="y" value="1" />
-            <arg name="z" value="1" />
+            <arg name="x" value="5.5" />
+            <arg name="y" value="2.2" />
+            <arg name="z" value="0.01" />
         </include>
 
         <!-- launch drone front camera view if cam arg is true -->
@@ -123,15 +140,13 @@
         </group>
 
         <!-- launch drone down laser view if las arg is true -->
-        <group if="$(arg las_down_b)">
+        <group if="$(arg depth_cam_b)">
             <!-- 'name="node_name"' attribute should match the name in the python file -->
             <!-- rospy.init_node('node_name', anonymous=True) -->
             <node pkg="drone_bringup"
-                type="drone_down_las_viewer.py"
-                name="drone_down_las_viewer"
-                output="screen"
-                launch-prefix="bash -c 'sleep 2.0; $0 $@' "/>
-                <!-- launch-prefix ... adds a delay, this is my attempt to ensure lasers are shown-->/>
+                type="depth_altimeter.py"
+                name="depth_altimeter"
+                output="screen"/>
         </group>
 
         <!-- depending on argument to roslaunch drone.launch mode:=arg, choose mode: -->
@@ -139,13 +154,25 @@
             <!-- launch the teleop keyboard control mode -->
             <include file="$(find drone_teleop)/launch/drone_teleop.launch" />
         </group>
-        <group if="$(eval arg('mode_b') == 'autonomous')">
-            <!-- launch the autonomous control mode -->
-            <include file="$(find drone_autonomous)/launch/drone_autonomous.launch" />
+        <group if="$(eval arg('mode_b') == 'team_left')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_left)/launch/drone_left.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'team_right')">
+            <!-- launch the team control mode -->
+            <include file="$(find drone_right)/launch/drone_right.launch" />
         </group>
         <group if="$(eval arg('mode_b') == 'time_trials')">
             <!-- launch the time trials control mode -->
             <include file="$(find drone_time_trials)/launch/drone_time_trials.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'overseer')">
+            <!-- launch the overseer control mode -->
+            <include file="$(find overseer_drone)/launch/overseer_drone.launch" />
+        </group>
+        <group if="$(eval arg('mode_b') == 'worker')">
+            <!-- launch the worker control mode -->
+            <include file="$(find worker)/launch/worker.launch" />
         </group>
         <group if="$(eval arg('mode_b') == 'collect_photos')">
             <!-- launch the photo collection control mode -->
@@ -158,7 +185,9 @@
             </include>
         </group>
 
-        <!-- launch drone stabilization -->
-        <include file="$(find stable_drone)/launch/stable_drone.launch" />
+        <!-- launch drone roll, pitch, yaw stabilization -->
+        <group if="$(arg stable_rpy_b)">
+            <include file="$(find stable_rpy)/launch/stable_rpy.launch" />
+        </group>
     </group>
 </launch>
